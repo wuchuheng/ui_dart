@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-typedef OnTap = void Function(int index);
+typedef OnTap = void Function(String key);
 
 class BottomSheetItem {
   final String title;
   final Color? color;
-  BottomSheetItem({required this.title, this.color});
+  final String key;
+  BottomSheetItem({required this.key, required this.title, this.color});
 }
 
 onBottomSheet({
@@ -23,6 +24,7 @@ onBottomSheet({
   double fontSize = 16;
 
   showModalBottomSheet<void>(
+    isScrollControlled: true,
     backgroundColor: Colors.transparent,
     context: context,
     builder: (BuildContext context) {
@@ -42,20 +44,24 @@ onBottomSheet({
                   children: ListTile.divideTiles(context: context, tiles: [
                     SizedBox(
                       height: itemHeight,
-                      child: Center(child: Text(title, style: TextStyle(fontSize: fontSize))),
+                      child: Center(
+                          child: Text(title,
+                              style: TextStyle(fontSize: fontSize))),
                     ),
                     for (int index = 0; index < items.length; index++)
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
                           Navigator.pop(context);
-                          if (onTap != null) onTap(index);
+                          if (onTap != null) onTap(items[index].key);
                         },
                         child: SizedBox(
                           height: itemHeight,
                           child: Center(
                             child: Text(items[index].title,
-                                style: TextStyle(color: items[index].color ?? Colors.black, fontSize: fontSize)),
+                                style: TextStyle(
+                                    color: items[index].color ?? Colors.black,
+                                    fontSize: fontSize)),
                           ),
                         ),
                       ),
@@ -75,7 +81,9 @@ onBottomSheet({
                 },
                 child: SizedBox(
                   width: double.infinity,
-                  child: Center(child: Text('Cancel', style: TextStyle(fontSize: fontSize))),
+                  child: Center(
+                      child:
+                          Text('Cancel', style: TextStyle(fontSize: fontSize))),
                 ),
               ),
             ),
